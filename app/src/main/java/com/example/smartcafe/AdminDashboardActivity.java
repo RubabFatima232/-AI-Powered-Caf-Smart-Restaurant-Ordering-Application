@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -14,17 +15,20 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+
+import java.util.HashMap;
 
 public class AdminDashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_dashboard);
+
+        sessionManager = SessionManager.getInstance(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -33,25 +37,44 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        updateNavHeader();
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        // Set user details in nav header
+        View headerView = navigationView.getHeaderView(0);
+        TextView navHeaderName = headerView.findViewById(R.id.nav_header_name);
+        TextView navHeaderEmail = headerView.findViewById(R.id.nav_header_email);
+        HashMap<String, String> userDetails = sessionManager.getUserDetails();
+        navHeaderName.setText(userDetails.get(SessionManager.KEY_NAME));
+        navHeaderEmail.setText(userDetails.get(SessionManager.KEY_EMAIL));
+
+        // Load default fragment
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DashboardFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AnalyticsFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_dashboard);
         }
 
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+        // Modern approach to handle back press with Navigation Drawer
+        final OnBackPressedCallback callback = new OnBackPressedCallback(false) { // Initially disabled
             @Override
             public void handleOnBackPressed() {
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                } else {
-                    finish();
-                }
+                // This is only called when the drawer is open
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
+
+        drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+                callback.setEnabled(true);
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+                callback.setEnabled(false);
             }
         });
     }
@@ -60,30 +83,16 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.nav_dashboard) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DashboardFragment()).commit();
-        } else if (itemId == R.id.nav_manage_menu) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ManageMenuFragment()).commit();
-        } else if (itemId == R.id.nav_manage_reservations) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ManageReservationsFragment()).commit();
-        } else if (itemId == R.id.nav_analytics) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AnalyticsFragment()).commit();
+        } else if (itemId == R.id.nav_logout) {
+            sessionManager.logoutUser();
+            finish(); // Finish this activity so the user can't go back to it
+        } else {
+            // Handle other navigation items later
+            Toast.makeText(this, "Coming Soon!", Toast.LENGTH_SHORT).show();
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void updateNavHeader() {
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        View headerView = navigationView.getHeaderView(0);
-        TextView adminNameTextView = headerView.findViewById(R.id.nav_header_admin_name);
-        TextView adminEmailTextView = headerView.findViewById(R.id.nav_header_admin_email);
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            adminEmailTextView.setText(user.getEmail());
-            // You can also retrieve the admin's name from Firestore if you store it there
-            adminNameTextView.setText("Admin"); // Placeholder
-        }
     }
 }

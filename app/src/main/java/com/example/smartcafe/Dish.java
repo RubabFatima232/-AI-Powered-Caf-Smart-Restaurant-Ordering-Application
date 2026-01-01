@@ -43,6 +43,7 @@ public class Dish {
         return price;
     }
 
+    @SuppressWarnings("unused")
     public void setPrice(String price) {
         this.price = price;
     }
@@ -51,6 +52,7 @@ public class Dish {
         return category;
     }
 
+    @SuppressWarnings("unused")
     public void setCategory(String category) {
         this.category = category;
     }
@@ -59,6 +61,7 @@ public class Dish {
         return description;
     }
 
+    @SuppressWarnings("unused")
     public void setDescription(String description) {
         this.description = description;
     }
@@ -67,6 +70,7 @@ public class Dish {
         return imageUrl;
     }
 
+    @SuppressWarnings("unused")
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }

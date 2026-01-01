@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +26,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -37,6 +40,7 @@ import java.util.UUID;
 
 public class ManageMenuFragment extends Fragment implements AdminMenuAdapter.OnDishActionListener {
 
+    private static final String TAG = "ManageMenuFragment";
     private AdminMenuAdapter adapter;
     private List<Dish> menuItems;
     private FirebaseFirestore db;
@@ -44,6 +48,7 @@ public class ManageMenuFragment extends Fragment implements AdminMenuAdapter.OnD
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     private Uri selectedImageUri;
     private ImageView dialogImagePreview;
+    private ListenerRegistration menuListener;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,7 +59,7 @@ public class ManageMenuFragment extends Fragment implements AdminMenuAdapter.OnD
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         selectedImageUri = result.getData().getData();
                         if (dialogImagePreview != null) {
-                            dialogImagePreview.setImageURI(selectedImageUri);
+                            Glide.with(requireContext()).load(selectedImageUri).into(dialogImagePreview);
                         }
                     }
                 });
@@ -68,10 +73,10 @@ public class ManageMenuFragment extends Fragment implements AdminMenuAdapter.OnD
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         RecyclerView recyclerView = view.findViewById(R.id.menu_items_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         menuItems = new ArrayList<>();
-        adapter = new AdminMenuAdapter(getContext(), menuItems, this);
+        adapter = new AdminMenuAdapter(requireContext(), menuItems, this);
         recyclerView.setAdapter(adapter);
 
         loadMenuItems();
@@ -82,18 +87,50 @@ public class ManageMenuFragment extends Fragment implements AdminMenuAdapter.OnD
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (menuListener != null) {
+            menuListener.remove();
+        }
+    }
+
     private void loadMenuItems() {
-        db.collection("menu").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                menuItems.clear();
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    Dish dish = document.toObject(Dish.class);
-                    dish.setDocumentId(document.getId());
-                    menuItems.add(dish);
+        menuListener = db.collection("menu").addSnapshotListener((snapshots, e) -> {
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e);
+                Toast.makeText(requireContext(), "Error loading menu items.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (snapshots != null) {
+                for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                    Dish dish = dc.getDocument().toObject(Dish.class);
+                    dish.setDocumentId(dc.getDocument().getId());
+
+                    switch (dc.getType()) {
+                        case ADDED:
+                            menuItems.add(dc.getNewIndex(), dish);
+                            adapter.notifyItemInserted(dc.getNewIndex());
+                            break;
+                        case MODIFIED:
+                            if (dc.getOldIndex() == dc.getNewIndex()) {
+                                menuItems.set(dc.getNewIndex(), dish);
+                                adapter.notifyItemChanged(dc.getNewIndex());
+                            } else {
+                                menuItems.remove(dc.getOldIndex());
+                                menuItems.add(dc.getNewIndex(), dish);
+                                adapter.notifyItemMoved(dc.getOldIndex(), dc.getNewIndex());
+                            }
+                            break;
+                        case REMOVED:
+                            if (dc.getOldIndex() < menuItems.size()) {
+                                menuItems.remove(dc.getOldIndex());
+                                adapter.notifyItemRemoved(dc.getOldIndex());
+                            }
+                            break;
+                    }
                 }
-                adapter.notifyDataSetChanged();
-            } else {
-                Toast.makeText(getContext(), "Error loading menu items.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -101,7 +138,7 @@ public class ManageMenuFragment extends Fragment implements AdminMenuAdapter.OnD
     private void showAddOrUpdateDishDialog(@Nullable final Dish dish) {
         selectedImageUri = null;
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle(dish == null ? "Add New Dish" : "Update Dish");
 
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_dish, null);
@@ -120,20 +157,22 @@ public class ManageMenuFragment extends Fragment implements AdminMenuAdapter.OnD
             dishDescriptionEditText.setText(dish.getDescription());
             dishPriceEditText.setText(dish.getPrice().replace("$", ""));
             if (dish.getImageUrl() != null && !dish.getImageUrl().isEmpty()) {
-                Glide.with(getContext()).load(dish.getImageUrl()).into(dialogImagePreview);
+                Glide.with(requireContext()).load(dish.getImageUrl()).into(dialogImagePreview);
             }
         }
 
-        selectImageButton.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            imagePickerLauncher.launch(intent);
-        });
+        selectImageButton.setOnClickListener(v -> imagePickerLauncher.launch(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)));
 
         builder.setPositiveButton(dish == null ? "Add" : "Update", (dialog, which) -> {
-            String name = dishNameEditText.getText().toString().trim();
-            String category = dishCategoryEditText.getText().toString().trim();
-            String description = dishDescriptionEditText.getText().toString().trim();
-            String price = dishPriceEditText.getText().toString().trim();
+            Editable nameEditable = dishNameEditText.getText();
+            Editable categoryEditable = dishCategoryEditText.getText();
+            Editable descriptionEditable = dishDescriptionEditText.getText();
+            Editable priceEditable = dishPriceEditText.getText();
+
+            String name = (nameEditable != null) ? nameEditable.toString().trim() : "";
+            String category = (categoryEditable != null) ? categoryEditable.toString().trim() : "";
+            String description = (descriptionEditable != null) ? descriptionEditable.toString().trim() : "";
+            String price = (priceEditable != null) ? priceEditable.toString().trim() : "";
 
             if (!name.isEmpty() && !price.isEmpty() && !category.isEmpty() && !description.isEmpty()) {
                 if (selectedImageUri != null) {
@@ -141,8 +180,10 @@ public class ManageMenuFragment extends Fragment implements AdminMenuAdapter.OnD
                 } else if (dish != null) {
                     updateDishInFirestore(dish, name, category, description, price, dish.getImageUrl());
                 } else {
-                    Toast.makeText(getContext(), "Please select an image for the new dish", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Please select an image for the new dish", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
             }
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
@@ -161,17 +202,14 @@ public class ManageMenuFragment extends Fragment implements AdminMenuAdapter.OnD
                         updateDishInFirestore(dish, name, category, description, price, imageUrl);
                     }
                 }))
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Image upload failed", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Image upload failed", Toast.LENGTH_SHORT).show());
     }
 
     private void addDishToFirestore(String name, String category, String description, String price, String imageUrl) {
         Dish newDish = new Dish(name, "$" + price, category, description, imageUrl);
-        db.collection("menu").add(newDish).addOnSuccessListener(documentReference -> {
-            Toast.makeText(getContext(), "Dish added successfully", Toast.LENGTH_SHORT).show();
-            loadMenuItems();
-        }).addOnFailureListener(e -> {
-            Toast.makeText(getContext(), "Error adding dish", Toast.LENGTH_SHORT).show();
-        });
+        db.collection("menu").add(newDish)
+                .addOnSuccessListener(documentReference -> Toast.makeText(requireContext(), "Dish added successfully", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Error adding dish", Toast.LENGTH_SHORT).show());
     }
 
     private void updateDishInFirestore(Dish dish, String newName, String newCategory, String newDescription, String newPrice, String newImageUrl) {
@@ -183,13 +221,8 @@ public class ManageMenuFragment extends Fragment implements AdminMenuAdapter.OnD
         updatedDish.put("imageUrl", newImageUrl);
 
         db.collection("menu").document(dish.getDocumentId()).update(updatedDish)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getContext(), "Dish updated successfully", Toast.LENGTH_SHORT).show();
-                    loadMenuItems();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Error updating dish", Toast.LENGTH_SHORT).show();
-                });
+                .addOnSuccessListener(aVoid -> Toast.makeText(requireContext(), "Dish updated successfully", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Error updating dish", Toast.LENGTH_SHORT).show());
     }
 
     @Override
@@ -200,14 +233,7 @@ public class ManageMenuFragment extends Fragment implements AdminMenuAdapter.OnD
     @Override
     public void onDeleteDish(Dish dish, int position) {
         db.collection("menu").document(dish.getDocumentId()).delete()
-                .addOnSuccessListener(aVoid -> {
-                    menuItems.remove(position);
-                    adapter.notifyItemRemoved(position);
-                    adapter.notifyItemRangeChanged(position, menuItems.size());
-                    Toast.makeText(getContext(), "Deleted: " + dish.getName(), Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Error deleting dish", Toast.LENGTH_SHORT).show();
-                });
+                .addOnSuccessListener(aVoid -> Toast.makeText(requireContext(), "Deleted: " + dish.getName(), Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Error deleting dish", Toast.LENGTH_SHORT).show());
     }
 }

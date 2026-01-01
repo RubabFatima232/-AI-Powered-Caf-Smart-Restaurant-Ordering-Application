@@ -1,8 +1,8 @@
 package com.example.smartcafe;
 
 public class Category {
-    private String name;
-    private int iconResId;
+    private final String name;
+    private final int iconResId;
 
     public Category(String name, int iconResId) {
         this.name = name;

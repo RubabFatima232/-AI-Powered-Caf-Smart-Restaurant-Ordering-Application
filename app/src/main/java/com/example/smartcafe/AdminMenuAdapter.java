@@ -22,9 +22,9 @@ public class AdminMenuAdapter extends RecyclerView.Adapter<AdminMenuAdapter.Admi
         void onDeleteDish(Dish dish, int position);
     }
 
-    private List<Dish> menuItems;
-    private OnDishActionListener listener;
-    private Context context;
+    private final List<Dish> menuItems;
+    private final OnDishActionListener listener;
+    private final Context context;
 
     public AdminMenuAdapter(Context context, List<Dish> menuItems, OnDishActionListener listener) {
         this.context = context;
@@ -70,7 +70,7 @@ public class AdminMenuAdapter extends RecyclerView.Adapter<AdminMenuAdapter.Admi
         return menuItems.size();
     }
 
-    static class AdminMenuViewHolder extends RecyclerView.ViewHolder {
+    public static class AdminMenuViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImage;
         TextView itemName;
         TextView itemPrice;

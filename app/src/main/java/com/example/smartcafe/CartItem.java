@@ -1,28 +1,33 @@
 package com.example.smartcafe;
 
 public class CartItem {
+    private final String dishId;
     private String name;
-    private String price;
-    private int imageResId;
+    private final String price;
     private int quantity;
 
-    public CartItem(String name, String price, int imageResId, int quantity) {
+    public CartItem(String dishId, String name, String price, int quantity) {
+        this.dishId = dishId;
         this.name = name;
         this.price = price;
-        this.imageResId = imageResId;
         this.quantity = quantity;
+    }
+
+    // Getters
+    public String getDishId() {
+        return dishId;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getPrice() {
-        return price;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getImageResId() {
-        return imageResId;
+    public String getPrice() {
+        return price;
     }
 
     public int getQuantity() {

@@ -11,6 +11,7 @@ public class Order {
     @ServerTimestamp
     private Date timestamp;
 
+    @SuppressWarnings("unused")
     public Order() {
         // Needed for Firestore
     }
@@ -21,34 +22,42 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
+    @SuppressWarnings("unused")
     public String getUserId() {
         return userId;
     }
 
+    @SuppressWarnings("unused")
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
+    @SuppressWarnings("unused")
     public List<OrderItem> getItems() {
         return items;
     }
 
+    @SuppressWarnings("unused")
     public void setItems(List<OrderItem> items) {
         this.items = items;
     }
 
+    @SuppressWarnings("unused")
     public double getTotalPrice() {
         return totalPrice;
     }
 
+    @SuppressWarnings("unused")
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
 
+    @SuppressWarnings("unused")
     public Date getTimestamp() {
         return timestamp;
     }
 
+    @SuppressWarnings("unused")
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }

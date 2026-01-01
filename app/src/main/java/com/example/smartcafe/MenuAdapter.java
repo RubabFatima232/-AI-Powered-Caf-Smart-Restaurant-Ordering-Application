@@ -15,25 +15,25 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-public class FeaturedDishAdapter extends RecyclerView.Adapter<FeaturedDishAdapter.FeaturedDishViewHolder> {
+public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder> {
 
     private final List<Dish> dishes;
     private final Context context;
 
-    public FeaturedDishAdapter(Context context, List<Dish> dishes) {
+    public MenuAdapter(Context context, List<Dish> dishes) {
         this.context = context;
         this.dishes = dishes;
     }
 
     @NonNull
     @Override
-    public FeaturedDishViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MenuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_featured_dish, parent, false);
-        return new FeaturedDishViewHolder(view);
+        return new MenuViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FeaturedDishViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MenuViewHolder holder, int position) {
         Dish dish = dishes.get(position);
         holder.dishName.setText(dish.getName());
         holder.dishPrice.setText(dish.getPrice());
@@ -57,12 +57,12 @@ public class FeaturedDishAdapter extends RecyclerView.Adapter<FeaturedDishAdapte
         return dishes.size();
     }
 
-    public static class FeaturedDishViewHolder extends RecyclerView.ViewHolder {
+    public static class MenuViewHolder extends RecyclerView.ViewHolder {
         ImageView dishImage;
         TextView dishName;
         TextView dishPrice;
 
-        public FeaturedDishViewHolder(@NonNull View itemView) {
+        public MenuViewHolder(@NonNull View itemView) {
             super(itemView);
             dishImage = itemView.findViewById(R.id.dish_image);
             dishName = itemView.findViewById(R.id.dish_name);

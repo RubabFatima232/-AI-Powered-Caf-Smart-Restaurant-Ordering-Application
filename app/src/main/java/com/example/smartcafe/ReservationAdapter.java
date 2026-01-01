@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Locale;
 
 public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.ReservationViewHolder> {
 
@@ -20,9 +21,9 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         void onReject(Reservation reservation);
     }
 
-    private List<Reservation> reservations;
-    private OnReservationActionListener listener;
-    private Context context;
+    private final List<Reservation> reservations;
+    private final OnReservationActionListener listener;
+    private final Context context;
 
     public ReservationAdapter(Context context, List<Reservation> reservations, OnReservationActionListener listener) {
         this.context = context;
@@ -40,8 +41,8 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     @Override
     public void onBindViewHolder(@NonNull ReservationViewHolder holder, int position) {
         Reservation reservation = reservations.get(position);
-        holder.detailsText.setText(String.format("Reservation for %d people on %s at %s", reservation.getSeats(), reservation.getDate(), reservation.getTime()));
-        holder.statusText.setText("Status: " + reservation.getStatus());
+        holder.detailsText.setText(String.format(Locale.getDefault(), "Reservation for %d people on %s at %s", reservation.getSeats(), reservation.getDate(), reservation.getTime()));
+        holder.statusText.setText(String.format(Locale.getDefault(), "Status: %s", reservation.getStatus()));
 
         switch (reservation.getStatus()) {
             case "approved":
@@ -67,7 +68,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         return reservations.size();
     }
 
-    static class ReservationViewHolder extends RecyclerView.ViewHolder {
+    public static class ReservationViewHolder extends RecyclerView.ViewHolder {
         TextView detailsText;
         TextView statusText;
         View actionButtonsLayout;

@@ -2,6 +2,7 @@ package com.example.smartcafe;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -12,13 +13,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class SignupActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private SessionManager sessionManager;
+    private TextInputEditText nameEditText, emailEditText, passwordEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,50 +27,56 @@ public class SignupActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        sessionManager = SessionManager.getInstance(this);
 
-        TextInputEditText nameEditText = findViewById(R.id.name_edit_text);
-        TextInputEditText emailEditText = findViewById(R.id.email_edit_text);
-        TextInputEditText passwordEditText = findViewById(R.id.password_edit_text);
+        nameEditText = findViewById(R.id.name_edit_text);
+        emailEditText = findViewById(R.id.email_edit_text);
+        passwordEditText = findViewById(R.id.password_edit_text);
         Button signupButton = findViewById(R.id.signup_button);
 
         signupButton.setOnClickListener(v -> {
-            String name = nameEditText.getText().toString().trim();
-            String email = emailEditText.getText().toString().trim();
-            String password = passwordEditText.getText().toString().trim();
+            Editable nameEditable = nameEditText.getText();
+            Editable emailEditable = emailEditText.getText();
+            Editable passwordEditable = passwordEditText.getText();
+
+            if (nameEditable == null || emailEditable == null || passwordEditable == null) {
+                Toast.makeText(SignupActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String name = nameEditable.toString().trim();
+            String email = emailEditable.toString().trim();
+            String password = passwordEditable.toString().trim();
 
             if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(SignupActivity.this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignupActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            addUserToFirestore(user, name);
+                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                            if (firebaseUser != null) {
+                                String userId = firebaseUser.getUid();
+                                String defaultRole = "customer";
+                                User newUser = new User(name, email, defaultRole);
+
+                                db.collection("users").document(userId).set(newUser)
+                                        .addOnSuccessListener(aVoid -> {
+                                            // Create session and navigate
+                                            sessionManager.createLoginSession(userId, name, email, defaultRole);
+                                            Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                        })
+                                        .addOnFailureListener(e -> Toast.makeText(SignupActivity.this, "Error saving user data.", Toast.LENGTH_SHORT).show());
+                            }
                         } else {
                             Toast.makeText(SignupActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
                     });
         });
-    }
-
-    private void addUserToFirestore(FirebaseUser firebaseUser, String name) {
-        if (firebaseUser == null) return;
-
-        Map<String, Object> user = new HashMap<>();
-        user.put("name", name);
-        user.put("email", firebaseUser.getEmail());
-        user.put("role", "customer"); // Default role
-
-        db.collection("users").document(firebaseUser.getUid()).set(user)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(SignupActivity.this, "Signup successful!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(SignupActivity.this, HomeActivity.class));
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(SignupActivity.this, "Error saving user data.", Toast.LENGTH_SHORT).show();
-                });
     }
 }

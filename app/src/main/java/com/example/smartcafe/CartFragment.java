@@ -14,20 +14,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class CartFragment extends Fragment {
+public class CartFragment extends Fragment implements CartAdapter.OnCartActionListener, CartManager.CartChangedListener {
 
-    private List<CartItem> cartItems;
     private CartAdapter cartAdapter;
     private TextView totalBillTextView;
     private FirebaseFirestore db;
-    private FirebaseAuth mAuth;
+    private List<CartItem> cartItems;
+    private CartManager cartManager;
 
     @Nullable
     @Override
@@ -35,42 +34,16 @@ public class CartFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
 
         db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
+        cartManager = CartManager.getInstance();
 
         RecyclerView cartRecyclerView = view.findViewById(R.id.cart_recycler_view);
-        cartRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        cartRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        cartItems = new ArrayList<>();
-        // In a real app, you would load cart items from a local database or a remote server
-        // For now, we will continue to use dummy data.
-        cartItems.add(new CartItem("Cheese Pizza", "$8.99", R.drawable.ic_placeholder_dish, 1));
-        cartItems.add(new CartItem("Chocolate Shake", "$4.50", R.drawable.ic_placeholder_dish, 2));
-
-        cartAdapter = new CartAdapter(cartItems);
+        cartItems = cartManager.getCartItems();
+        cartAdapter = new CartAdapter(cartItems, this);
         cartRecyclerView.setAdapter(cartAdapter);
 
         totalBillTextView = view.findViewById(R.id.total_bill_text_view);
-        updateTotalBill();
-
-        cartAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                updateTotalBill();
-            }
-
-            @Override
-            public void onItemRangeChanged(int positionStart, int itemCount) {
-                super.onItemRangeChanged(positionStart, itemCount);
-                updateTotalBill();
-            }
-
-            @Override
-            public void onItemRangeChanged(int positionStart, int itemCount, @Nullable Object payload) {
-                super.onItemRangeChanged(positionStart, itemCount, payload);
-                updateTotalBill();
-            }
-        });
 
         Button placeOrderButton = view.findViewById(R.id.place_order_button);
         placeOrderButton.setOnClickListener(v -> placeOrder());
@@ -78,46 +51,94 @@ public class CartFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        cartManager.setListener(this);
+        // Sync UI on resume
+        cartAdapter.notifyDataSetChanged();
+        updateTotalBill();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        cartManager.setListener(null); // Avoid memory leaks
+    }
+
     private void updateTotalBill() {
         double total = 0;
         for (CartItem item : cartItems) {
-            double price = Double.parseDouble(item.getPrice().substring(1));
-            total += price * item.getQuantity();
+            try {
+                double price = Double.parseDouble(item.getPrice().replace("$", ""));
+                total += price * item.getQuantity();
+            } catch (NumberFormatException e) {
+                // Handle case where price is not a valid number
+            }
         }
-        totalBillTextView.setText(String.format("Total: $%.2f", total));
+        totalBillTextView.setText(String.format(Locale.getDefault(), "Total: $%.2f", total));
     }
 
     private void placeOrder() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            Toast.makeText(getContext(), "You must be logged in to place an order", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         if (cartItems.isEmpty()) {
-            Toast.makeText(getContext(), "Your cart is empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Your cart is empty", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String userId = currentUser.getUid();
+        String userId = "guest_user"; // Placeholder
         List<OrderItem> orderItems = new ArrayList<>();
         double totalPrice = 0;
 
         for (CartItem cartItem : cartItems) {
-            // In a real app, you would use the actual dishId
-            orderItems.add(new OrderItem("placeholder_dish_id", cartItem.getName(), cartItem.getPrice(), cartItem.getQuantity()));
-            totalPrice += Double.parseDouble(cartItem.getPrice().substring(1)) * cartItem.getQuantity();
+            orderItems.add(new OrderItem(cartItem.getDishId(), cartItem.getName(), cartItem.getPrice(), cartItem.getQuantity()));
+            try {
+                totalPrice += Double.parseDouble(cartItem.getPrice().replace("$", "")) * cartItem.getQuantity();
+            } catch (NumberFormatException e) {
+                // Handle error
+            }
         }
 
         Order order = new Order(userId, orderItems, totalPrice);
 
         db.collection("orders").add(order)
                 .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(getContext(), "Order placed successfully!", Toast.LENGTH_SHORT).show();
-                    cartItems.clear();
-                    cartAdapter.notifyDataSetChanged();
-                    updateTotalBill();
+                    Toast.makeText(requireContext(), "Order placed successfully!", Toast.LENGTH_SHORT).show();
+                    cartManager.clearCart();
                 })
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Error placing order", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Error placing order", Toast.LENGTH_SHORT).show());
+    }
+
+    @Override
+    public void onIncreaseQuantity(int position) {
+        cartManager.updateQuantity(position, cartItems.get(position).getQuantity() + 1);
+    }
+
+    @Override
+    public void onDecreaseQuantity(int position) {
+        cartManager.updateQuantity(position, cartItems.get(position).getQuantity() - 1);
+    }
+
+    @Override
+    public void onCartItemAdded(int position) {
+        cartAdapter.notifyItemInserted(position);
+        updateTotalBill();
+    }
+
+    @Override
+    public void onCartItemRemoved(int position) {
+        cartAdapter.notifyItemRemoved(position);
+        updateTotalBill();
+    }
+
+    @Override
+    public void onCartItemChanged(int position) {
+        cartAdapter.notifyItemChanged(position);
+        updateTotalBill();
+    }
+
+    @Override
+    public void onCartCleared() {
+        cartAdapter.notifyDataSetChanged();
+        updateTotalBill();
     }
 }

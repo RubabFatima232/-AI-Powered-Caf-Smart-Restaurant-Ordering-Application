@@ -1,4 +1,4 @@
-package com.example.ai_poweredcafsmartrestaurantorderingapplication;
+package com.example;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.example.ai_poweredcafsmartrestaurantorderingapplication", appContext.getPackageName());
+        assertEquals("com.example.smartcafe", appContext.getPackageName());
     }
 }

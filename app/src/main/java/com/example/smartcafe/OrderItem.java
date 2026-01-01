@@ -6,6 +6,7 @@ public class OrderItem {
     private String price;
     private int quantity;
 
+    @SuppressWarnings("unused")
     public OrderItem() {
         // Needed for Firestore
     }
@@ -17,10 +18,12 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
+    @SuppressWarnings("unused")
     public String getDishId() {
         return dishId;
     }
 
+    @SuppressWarnings("unused")
     public void setDishId(String dishId) {
         this.dishId = dishId;
     }
@@ -33,18 +36,22 @@ public class OrderItem {
         this.name = name;
     }
 
+    @SuppressWarnings("unused")
     public String getPrice() {
         return price;
     }
 
+    @SuppressWarnings("unused")
     public void setPrice(String price) {
         this.price = price;
     }
 
+    @SuppressWarnings("unused")
     public int getQuantity() {
         return quantity;
     }
 
+    @SuppressWarnings("unused")
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }

@@ -18,16 +18,10 @@ public class ProfileSelectionActivity extends AppCompatActivity {
         MaterialCardView customerCard = findViewById(R.id.card_customer);
         MaterialCardView profileCard = findViewById(R.id.card_profile);
 
-        adminCard.setOnClickListener(v -> {
-            startActivity(new Intent(ProfileSelectionActivity.this, AdminDashboardActivity.class));
-        });
+        adminCard.setOnClickListener(v -> startActivity(new Intent(ProfileSelectionActivity.this, AdminDashboardActivity.class)));
 
-        customerCard.setOnClickListener(v -> {
-            startActivity(new Intent(ProfileSelectionActivity.this, HomeActivity.class));
-        });
+        customerCard.setOnClickListener(v -> startActivity(new Intent(ProfileSelectionActivity.this, HomeActivity.class)));
 
-        profileCard.setOnClickListener(v -> {
-            startActivity(new Intent(ProfileSelectionActivity.this, DishDetailsActivity.class));
-        });
+        profileCard.setOnClickListener(v -> startActivity(new Intent(ProfileSelectionActivity.this, DishDetailsActivity.class)));
     }
 }

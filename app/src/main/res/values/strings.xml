@@ -43,4 +43,36 @@
     <string name="menu_item_image">Menu item image</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="fast_food">Fast Food</string>
+    <string name="drinks">Drinks</string>
+    <string name="desserts">Desserts</string>
+    <string name="main_course">Main Course</string>
+
+    <!-- Strings for activity_dish_details.xml -->
+    <string name="dish_image_description">Image of the dish</string>
+    <string name="dish_name_placeholder">Dish Name</string>
+    <string name="dish_description_placeholder">This is a detailed description of the dish, including its ingredients and how it is prepared.</string>
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="leave_a_review">Leave a Review</string>
+    <string name="share_your_experience">Share your experience...</string>
+    <string name="submit_review">Submit Review</string>
+
+    <!-- Strings for activity_profile_selection.xml -->
+    <string name="profile_selection_title">Select Your Profile</string>
+    <string name="profile_admin">Admin</string>
+    <string name="profile_customer">Customer</string>
+    <string name="profile_dish">Profile / Dish</string>
+
+    <!-- Strings for fragment_cart.xml -->
+    <string name="total_bill_placeholder">$0.00</string>
+
+    <!-- Strings for list_item_cart.xml -->
+    <string name="item_price_placeholder">$0.00</string>
+    <string name="item_quantity_placeholder">1</string>
+
+    <!-- Strings for fragment_profile.xml -->
+    <string name="profile_name_label">Name</string>
+    <string name="profile_email_label">Email</string>
+    <string name="profile_role_label">Role</string>
+    <string name="logout">Logout</string>
 </resources>

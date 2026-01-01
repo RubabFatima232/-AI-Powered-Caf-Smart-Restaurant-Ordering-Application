@@ -17,7 +17,7 @@
             android:layout_marginBottom="16dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_placeholder_dish"
-            android:contentDescription="@string/dish_image_preview" />
+            android:contentDescription="@string/dish_image_description" />
 
         <Button
             android:id="@+id/select_image_button"
@@ -28,6 +28,7 @@
             android:text="@string/select_image" />
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -36,11 +37,13 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dish_name_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -49,11 +52,13 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dish_category_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -64,11 +69,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minLines="3"
+                android:minHeight="48dp"
                 android:gravity="top"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -78,7 +85,8 @@
                 android:id="@+id/dish_price_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:minHeight="48dp"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

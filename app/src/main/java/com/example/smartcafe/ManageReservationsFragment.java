@@ -32,10 +32,10 @@ public class ManageReservationsFragment extends Fragment implements ReservationA
 
         db = FirebaseFirestore.getInstance();
         RecyclerView recyclerView = view.findViewById(R.id.reservations_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         reservationList = new ArrayList<>();
-        adapter = new ReservationAdapter(getContext(), reservationList, this);
+        adapter = new ReservationAdapter(requireContext(), reservationList, this);
         recyclerView.setAdapter(adapter);
 
         loadReservations();
@@ -47,16 +47,17 @@ public class ManageReservationsFragment extends Fragment implements ReservationA
         db.collection("reservations").orderBy("timestamp", Query.Direction.DESCENDING).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        int oldSize = reservationList.size();
                         reservationList.clear();
+                        adapter.notifyItemRangeRemoved(0, oldSize);
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Reservation reservation = document.toObject(Reservation.class);
-                            // You might want to store the document ID if you need to update it
-                            // reservation.setDocumentId(document.getId());
+                            reservation.setDocumentId(document.getId()); // Store the ID
                             reservationList.add(reservation);
                         }
-                        adapter.notifyDataSetChanged();
+                        adapter.notifyItemRangeInserted(0, reservationList.size());
                     } else {
-                        Toast.makeText(getContext(), "Error loading reservations.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Error loading reservations.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -72,23 +73,21 @@ public class ManageReservationsFragment extends Fragment implements ReservationA
     }
 
     private void updateReservationStatus(Reservation reservation, String status) {
-        // To update, we need the document ID. This requires a small change to how we load the data.
-        // Let's reload and find the document for simplicity, though a more optimized app would store the ID.
-        db.collection("reservations")
-                .whereEqualTo("userId", reservation.getUserId())
-                .whereEqualTo("timestamp", reservation.getTimestamp())
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        String documentId = queryDocumentSnapshots.getDocuments().get(0).getId();
-                        db.collection("reservations").document(documentId)
-                                .update("status", status)
-                                .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(getContext(), "Reservation " + status, Toast.LENGTH_SHORT).show();
-                                    loadReservations(); // Refresh the list
-                                })
-                                .addOnFailureListener(e -> Toast.makeText(getContext(), "Error updating reservation", Toast.LENGTH_SHORT).show());
+        if (reservation.getDocumentId() == null) {
+            Toast.makeText(requireContext(), "Cannot update: Missing reservation ID.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        db.collection("reservations").document(reservation.getDocumentId())
+                .update("status", status)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(requireContext(), "Reservation " + status, Toast.LENGTH_SHORT).show();
+                    int position = reservationList.indexOf(reservation);
+                    if (position != -1) {
+                        reservation.setStatus(status);
+                        adapter.notifyItemChanged(position);
                     }
-                });
+                })
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Error updating reservation", Toast.LENGTH_SHORT).show());
     }
 }

@@ -1,9 +1,11 @@
 package com.example.smartcafe;
 
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.ServerTimestamp;
 import java.util.Date;
 
 public class Reservation {
+    private String documentId;
     private String userId;
     private String date;
     private String time;
@@ -12,6 +14,7 @@ public class Reservation {
     @ServerTimestamp
     private Date timestamp;
 
+    @SuppressWarnings("unused")
     public Reservation() {
         // Needed for Firestore
     }
@@ -24,10 +27,21 @@ public class Reservation {
         this.status = status;
     }
 
+    @Exclude
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
+
+    @SuppressWarnings("unused")
     public String getUserId() {
         return userId;
     }
 
+    @SuppressWarnings("unused")
     public void setUserId(String userId) {
         this.userId = userId;
     }
@@ -36,6 +50,7 @@ public class Reservation {
         return date;
     }
 
+    @SuppressWarnings("unused")
     public void setDate(String date) {
         this.date = date;
     }
@@ -44,6 +59,7 @@ public class Reservation {
         return time;
     }
 
+    @SuppressWarnings("unused")
     public void setTime(String time) {
         this.time = time;
     }
@@ -52,6 +68,7 @@ public class Reservation {
         return seats;
     }
 
+    @SuppressWarnings("unused")
     public void setSeats(int seats) {
         this.seats = seats;
     }
@@ -64,10 +81,12 @@ public class Reservation {
         this.status = status;
     }
 
+    @SuppressWarnings("unused")
     public Date getTimestamp() {
         return timestamp;
     }
 
+    @SuppressWarnings("unused")
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }

@@ -10,13 +10,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Locale;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
 
-    private List<CartItem> cartItems;
+    public interface OnCartActionListener {
+        void onIncreaseQuantity(int position);
+        void onDecreaseQuantity(int position);
+    }
 
-    public CartAdapter(List<CartItem> cartItems) {
+    private final List<CartItem> cartItems;
+    private final OnCartActionListener listener;
+
+    public CartAdapter(List<CartItem> cartItems, OnCartActionListener listener) {
         this.cartItems = cartItems;
+        this.listener = listener;
     }
 
     @NonNull
@@ -31,19 +39,23 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         CartItem cartItem = cartItems.get(position);
         holder.dishName.setText(cartItem.getName());
         holder.dishPrice.setText(cartItem.getPrice());
-        holder.quantityTextView.setText(String.valueOf(cartItem.getQuantity()));
+        holder.quantityTextView.setText(String.format(Locale.getDefault(), "%d", cartItem.getQuantity()));
 
         holder.increaseQuantityButton.setOnClickListener(v -> {
-            int quantity = cartItem.getQuantity();
-            cartItem.setQuantity(quantity + 1);
-            notifyItemChanged(position);
+            if (listener != null) {
+                int adapterPosition = holder.getBindingAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    listener.onIncreaseQuantity(adapterPosition);
+                }
+            }
         });
 
         holder.decreaseQuantityButton.setOnClickListener(v -> {
-            int quantity = cartItem.getQuantity();
-            if (quantity > 1) {
-                cartItem.setQuantity(quantity - 1);
-                notifyItemChanged(position);
+            if (listener != null) {
+                int adapterPosition = holder.getBindingAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    listener.onDecreaseQuantity(adapterPosition);
+                }
             }
         });
     }
@@ -53,7 +65,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         return cartItems.size();
     }
 
-    static class CartViewHolder extends RecyclerView.ViewHolder {
+    public static class CartViewHolder extends RecyclerView.ViewHolder {
         TextView dishName;
         TextView dishPrice;
         TextView quantityTextView;
