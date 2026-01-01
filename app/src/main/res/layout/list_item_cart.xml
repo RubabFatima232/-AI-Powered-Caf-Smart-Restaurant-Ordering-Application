@@ -16,7 +16,7 @@
             android:id="@+id/dish_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Dish Name"
+            android:text="@string/dish_name"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:text="-" />
+                android:text="@string/decrease_quantity" />
 
             <TextView
                 android:id="@+id/quantity_text_view"
@@ -63,7 +63,7 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:text="+" />
+                android:text="@string/increase_quantity" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

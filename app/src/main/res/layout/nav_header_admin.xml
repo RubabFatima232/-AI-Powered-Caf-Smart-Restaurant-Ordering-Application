@@ -11,13 +11,21 @@
     <ImageView
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/ic_launcher_foreground" />
+        android:src="@drawable/ic_launcher_foreground"
+        android:contentDescription="@string/nav_header_icon" />
 
     <TextView
+        android:id="@+id/nav_header_admin_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
-        android:text="Admin"
+        android:text="@string/admin_name_placeholder"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+    <TextView
+        android:id="@+id/nav_header_admin_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/admin_email_placeholder" />
 
 </LinearLayout>

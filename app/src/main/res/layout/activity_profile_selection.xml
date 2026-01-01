@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="#FAFAFA"
+    tools:context=".ProfileSelectionActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Your Profile"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="48dp"/>
+
+    <!-- Admin Profile -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_admin"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Admin"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"/>
+
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Customer Profile -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_customer"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Customer"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"/>
+
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Dish/Profile Page -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_profile"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile / Dish"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"/>
+
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

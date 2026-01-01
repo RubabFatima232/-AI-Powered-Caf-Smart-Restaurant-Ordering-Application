@@ -4,51 +4,56 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/customer_name"
+            android:id="@+id/reservation_details_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Customer Name"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:text="Reservation for X people on YYYY-MM-DD at HH:MM"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/reservation_details"
+            android:id="@+id/reservation_status_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Date: YYYY-MM-DD, Time: HH:MM, People: X"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/customer_name" />
+            android:text="Status: pending"
+            android:textSize="14sp"
+            android:layout_marginTop="8dp"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/approve_button"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/action_buttons_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Approve"
-            app:layout_constraintEnd_toStartOf="@+id/reject_button"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/reject_button"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reject"
-            android:textColor="@android:color/holo_red_dark"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/approve_button"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Approve" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/reject_button"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorError"
+                android:text="Reject"
+                android:layout_marginStart="16dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

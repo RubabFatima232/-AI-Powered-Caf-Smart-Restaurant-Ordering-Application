@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="navigation_view">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
         <item
@@ -10,12 +8,12 @@
             android:title="Dashboard" />
         <item
             android:id="@+id/nav_manage_menu"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_restaurant_menu"
             android:title="Manage Menu" />
         <item
-            android:id="@+id/nav_reservations"
-            android:icon="@drawable/ic_reservations"
-            android:title="Reservations" />
+            android:id="@+id/nav_manage_reservations"
+            android:icon="@drawable/ic_event_seat"
+            android:title="Manage Reservations" />
         <item
             android:id="@+id/nav_analytics"
             android:icon="@drawable/ic_analytics"
