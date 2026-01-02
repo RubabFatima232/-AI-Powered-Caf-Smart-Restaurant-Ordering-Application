@@ -36,12 +36,25 @@ public class FeaturedDishAdapter extends RecyclerView.Adapter<FeaturedDishAdapte
     public void onBindViewHolder(@NonNull FeaturedDishViewHolder holder, int position) {
         Dish dish = dishes.get(position);
         holder.dishName.setText(dish.getName());
-        holder.dishPrice.setText(dish.getPrice());
+        holder.dishPrice.setText(String.format("$%s", dish.getPrice()));
 
-        if (dish.getImageUrl() != null && !dish.getImageUrl().isEmpty()) {
+        String imageUrl = dish.getImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            try {
+                int resourceId = Integer.parseInt(imageUrl);
+                Glide.with(context)
+                        .load(resourceId)
+                        .placeholder(R.drawable.ic_placeholder_dish)
+                        .into(holder.dishImage);
+            } catch (NumberFormatException e) {
+                Glide.with(context)
+                        .load(imageUrl)
+                        .placeholder(R.drawable.ic_placeholder_dish)
+                        .into(holder.dishImage);
+            }
+        } else {
             Glide.with(context)
-                    .load(dish.getImageUrl())
-                    .placeholder(R.drawable.ic_placeholder_dish)
+                    .load(R.drawable.ic_placeholder_dish)
                     .into(holder.dishImage);
         }
 

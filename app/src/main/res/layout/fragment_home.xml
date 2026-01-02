@@ -51,7 +51,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/ai_recommendation_background"
+                    android:background="@drawable/screenshot_2026_01_01_174003"
                     android:contentDescription="@string/ai_recommendation_background"
                     android:scaleType="centerCrop" />
 

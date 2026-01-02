@@ -7,89 +7,54 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp"
-    android:background="#FAFAFA"
+    android:background="@drawable/screenshot_2026_01_01_171501"
     tools:context=".ProfileSelectionActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:text="@string/profile_selection_title"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="48dp"/>
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
-    <!-- Admin Profile -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_admin"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp">
+        app:cardBackgroundColor="#C8E6C9"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="12dp">
 
-        <RelativeLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="16dp">
+            android:layout_height="wrap_content"
+            android:padding="24dp"
+            android:text="@string/profile_admin"
+            android:textAlignment="center"
+            android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_admin"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:layout_centerInParent="true"/>
-
-        </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Customer Profile -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_customer"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp">
+        app:cardBackgroundColor="#C8E6C9"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="12dp">
 
-        <RelativeLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="16dp">
+            android:layout_height="wrap_content"
+            android:padding="24dp"
+            android:text="@string/profile_customer"
+            android:textAlignment="center"
+            android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_customer"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:layout_centerInParent="true"/>
-
-        </RelativeLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- Dish/Profile Page -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_profile"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_dish"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:layout_centerInParent="true"/>
-
-        </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>
