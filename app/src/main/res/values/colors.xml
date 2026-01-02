@@ -1,13 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- App Theme Colors -->
-    <color name="brown">#6D4C41</color> <!-- Coffee Brown -->
-    <color name="orange">#FF7043</color> <!-- Warm Orange -->
+    <!-- Material 3 baseline -->
+    <color name="md_theme_primary">#FF006E1C</color>
+    <color name="md_theme_onPrimary">#FFFFFFFF</color>
+    <color name="md_theme_primaryContainer">#FF90FF8F</color>
+    <color name="md_theme_onPrimaryContainer">#FF002204</color>
 
-    <!-- Standard Colors -->
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="red">#F44336</color>
-    <color name="green">#4CAF50</color>
-    <color name="cream">#FFFDD0</color>
+    <color name="md_theme_secondary">#FF52634F</color>
+    <color name="md_theme_onSecondary">#FFFFFFFF</color>
+    <color name="md_theme_secondaryContainer">#FFD5E8CF</color>
+    <color name="md_theme_onSecondaryContainer">#FF101F10</color>
+
+    <color name="md_theme_error">#FFBA1A1A</color>
+    <color name="md_theme_onError">#FFFFFFFF</color>
+
+    <color name="md_theme_background">#FFFCFDF6</color>
+    <color name="md_theme_onBackground">#FF1A1C18</color>
+
+    <color name="md_theme_surface">#FFFCFDF6</color>
+    <color name="md_theme_onSurface">#FF1A1C18</color>
+
+    <!-- Dark variants -->
+    <color name="md_theme_dark_primary">#FF74E174</color>
+    <color name="md_theme_dark_onPrimary">#FF00390A</color>
+    <color name="md_theme_dark_primaryContainer">#FF005313</color>
+    <color name="md_theme_dark_onPrimaryContainer">#FF90FF8F</color>
+
+    <color name="md_theme_dark_background">#FF1A1C18</color>
+    <color name="md_theme_dark_onBackground">#FFE2E3DD</color>
+
+    <color name="md_theme_dark_surface">#FF1A1C18</color>
+    <color name="md_theme_dark_onSurface">#FFE2E3DD</color>
+
+    <!-- Compatibility aliases for old refs -->
+    <color name="colorPrimary">@color/md_theme_primary</color>
+    <color name="color_primary_variant">@color/md_theme_primaryContainer</color>
+    <color name="colorOnPrimary">@color/md_theme_onPrimary</color>
+    <color name="colorSecondary">@color/md_theme_secondary</color>
+    <color name="colorOnSecondary">@color/md_theme_onSecondary</color>
+    <color name="colorError">@color/md_theme_error</color>
+    <color name="colorOnError">@color/md_theme_onError</color>
+    <color name="colorBackground">@color/md_theme_background</color>
+    <color name="colorOnBackground">@color/md_theme_onBackground</color>
+    <color name="colorSurface">@color/md_theme_surface</color>
+    <color name="colorOnSurface">@color/md_theme_onSurface</color>
 </resources>

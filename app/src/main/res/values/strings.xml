@@ -1,5 +1,21 @@
 <resources>
-    <string name="app_name">Smart Café</string>
+    <string name="app_name">AI Café</string>
+    <string name="ai_recommends">AI Recommends</string>
+    <string name="featured_dishes">Featured Dishes</string>
+    <string name="categories">Categories</string>
+    <string name="cart">Cart</string>
+    <string name="my_cart">My Cart</string>
+    <string name="total_placeholder">Total: $0.00</string>
+    <string name="checkout">Checkout</string>
+    <string name="splash_logo">Splash screen logo</string>
+    <string name="onboarding_title">Meet Your AI Chef</string>
+    <string name="onboarding_subtitle">Personalised recommendations, zero wait time.</string>
+    <string name="onboarding_illustration_desc">An illustration of an AI chef cooking.</string>
+    <string name="get_started">Get Started</string>
+    <string name="featured_dish">Featured Dish</string>
+    <string name="featured_dish_desc">AI chef’s special – limited time!</string>
+    <string name="category_name">Category Name</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="dish_image_preview">Preview of the selected dish image</string>
@@ -16,7 +32,6 @@
     <string name="recommended_for_you">✨ Recommended For You</string>
     <string name="ai_recommendation_background">AI recommendation background</string>
     <string name="spicy_chicken_burger">Spicy Chicken Burger</string>
-    <string name="categories">Categories</string>
     <string name="see_all">See All</string>
     <string name="popular_dishes">Popular Dishes</string>
     <string name="menu_fragment">Menu Fragment</string>
@@ -29,7 +44,6 @@
     <string name="create_account">Create Account</string>
     <string name="full_name">Full Name</string>
     <string name="sign_up">Sign Up</string>
-    <string name="splash_screen_logo">Splash screen logo</string>
     <string name="app_title">AI-Powered Café</string>
     <string name="nav_header_icon">Navigation header icon</string>
     <string name="admin_name_placeholder">Admin Name</string>
@@ -65,6 +79,7 @@
 
     <!-- Strings for fragment_cart.xml -->
     <string name="total_bill_placeholder">$0.00</string>
+    <string name="your_cart">Your Cart</string>
 
     <!-- Strings for list_item_cart.xml -->
     <string name="item_price_placeholder">$0.00</string>
@@ -75,4 +90,11 @@
     <string name="profile_email_label">Email</string>
     <string name="profile_role_label">Role</string>
     <string name="logout">Logout</string>
+
+    <!-- Strings for redesigned layouts -->
+    <string name="nav_header_background">Navigation header background</string>
+    <string name="profile_selection_background">Profile selection background</string>
+    <string name="home_title">Welcome to Smart Café</string>
+    <string name="dish_image">Dish image</string>
+
 </resources>
