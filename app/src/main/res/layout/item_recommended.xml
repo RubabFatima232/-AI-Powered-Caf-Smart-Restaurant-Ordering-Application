@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,8 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:scaleType="centerCrop"
-            android:contentDescription="@string/dish_image"
-            android:src="@drawable/placeholder_food"/>
+            android:src="@drawable/ic_placeholder_food"/>
 
         <TextView
             android:id="@+id/tvName"
@@ -29,7 +27,7 @@
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/dish_name"
+            android:text="Dish Name"
             android:textAppearance="?attr/textAppearanceSubtitle2"/>
 
         <TextView
@@ -37,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/price"
+            android:text="$0"
             android:textAppearance="?attr/textAppearanceCaption"/>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

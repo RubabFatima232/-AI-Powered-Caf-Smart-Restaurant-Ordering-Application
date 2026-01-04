@@ -1,15 +1,10 @@
 package com.aicafe;
 
 import android.os.Bundle;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.*;
-import com.aicafe.Adapters;
-import com.aicafe.model.MenuItem;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class CartActivity extends AppCompatActivity {
 
@@ -30,16 +25,11 @@ public class CartActivity extends AppCompatActivity {
         Adapters.CartAdapter adapter = new Adapters.CartAdapter(item -> cart.remove(item.getId()));
         rvCart.setAdapter(adapter);
 
-        cart.getTotal().observe(this, total -> ((TextView) findViewById(R.id.tvTotal)).setText("Total  $" + String.format("%.2f", total)));
+        cart.getTotal().observe(this, total ->
+                ((android.widget.TextView) findViewById(R.id.tvTotal)).setText("Total  $" + String.format("%.2f", total)));
 
-        // observe cart items
-        cart.getCount().observe(this, count -> {
-            if (count == 0) {
-                adapter.submitList(new ArrayList<>());
-            } else {
-                adapter.submitList(new ArrayList<>(cart.getMap().values()));
-            }
-        });
+        cart.getCart().observe(this, items ->
+                adapter.submitList(new java.util.ArrayList<>(items)));
 
         findViewById(R.id.btnCheckout).setOnClickListener(v -> {
             if (cart.getItemIds().isEmpty()) {
@@ -49,8 +39,8 @@ public class CartActivity extends AppCompatActivity {
             viewModel.placeOrder(cart.getItemIds());
         });
 
-        viewModel.getRecommendedDishes().observe(this, resp -> {
-            Toast.makeText(this, "Order #" + resp.get(0).getId() + " placed", Toast.LENGTH_LONG).show();
+        viewModel.orderLive.observe(this, resp -> {
+            Toast.makeText(this, "Order #" + resp.getOrderId() + " placed", Toast.LENGTH_LONG).show();
             cart.clear();
             finish();
         });

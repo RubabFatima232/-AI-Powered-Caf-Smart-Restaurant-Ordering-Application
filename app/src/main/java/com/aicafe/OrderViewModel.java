@@ -1,40 +1,34 @@
 package com.aicafe;
 
-import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
-import com.aicafe.model.Category;
 import com.aicafe.model.MenuItem;
 import com.aicafe.model.Order;
-
 import java.util.List;
 
 public class OrderViewModel extends ViewModel {
-    private final Repository repository;
-    private final LiveData<List<MenuItem>> recommendedDishes;
-    private final LiveData<List<MenuItem>> featuredDishes;
-    private final LiveData<List<Category>> categories;
 
-    public OrderViewModel() {
-        repository = Repository.getInstance();
-        recommendedDishes = repository.getRecommendedDishes();
-        featuredDishes = repository.getFeaturedDishes();
-        categories = repository.getCategories();
+    public final MutableLiveData<List<MenuItem>> menuLive = new MutableLiveData<>();
+    public final MutableLiveData<Order> orderLive = new MutableLiveData<>();
+    private final Repository repository = new Repository();
+
+    public void loadMenu() {
+        repository.getMenuItems(new Repository.Callback() {
+            @Override
+            public void onSuccess(List<MenuItem> items) {
+                menuLive.postValue(items);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // For now, do nothing
+            }
+        });
     }
 
-    public LiveData<List<MenuItem>> getRecommendedDishes() {
-        return recommendedDishes;
-    }
-
-    public LiveData<List<MenuItem>> getFeaturedDishes() {
-        return featuredDishes;
-    }
-
-    public LiveData<List<Category>> getCategories() {
-        return categories;
-    }
-
-    public LiveData<Order> placeOrder(List<Integer> itemIds) {
-        return repository.placeOrder(itemIds);
+    public void placeOrder(List<Integer> itemIds) {
+        // In a real app, you would have a proper callback
+        Order order = repository.placeOrder(itemIds);
+        orderLive.postValue(order);
     }
 }

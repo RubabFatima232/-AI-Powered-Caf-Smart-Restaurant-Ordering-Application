@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,9 +13,9 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/app_name"
+            app:title="AI Café"
             app:menu="@menu/top_app_bar"
-            app:navigationIcon="@drawable/ic_menu_24"/>
+            app:navigationIcon="@drawable/ic_cafe_cup"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -34,7 +33,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ai_recommends"
+                android:text="AI Recommends"
                 android:textAppearance="?attr/textAppearanceHeadline6"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -49,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="@string/featured_dishes"
+                android:text="Featured Dishes"
                 android:textAppearance="?attr/textAppearanceHeadline6"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -64,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="@string/categories"
+                android:text="Categories"
                 android:textAppearance="?attr/textAppearanceHeadline6"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -83,6 +82,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:text="@string/cart"
+        android:text="Cart (0)"
         app:icon="@drawable/ic_shopping_cart_24"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
