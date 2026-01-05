@@ -10,44 +10,32 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Meet Your AI Chef"
+        android:text="I am …"
         android:textAppearance="?attr/textAppearanceHeadline4"
         android:textColor="?attr/colorOnBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <TextView
-        android:id="@+id/subTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Personalised recommendations, zero wait time."
-        android:textAppearance="?attr/textAppearanceBody1"
-        android:textColor="?attr/colorOnSurface"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"/>
-
-    <ImageView
-        android:id="@+id/illustration"
-        android:layout_width="0dp"
-        android:layout_height="240dp"
-        android:layout_marginTop="32dp"
-        android:src="@drawable/ic_placeholder_food"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/subTitle"/>
-
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnGetStarted"
+        android:id="@+id/btnCustomer"
         style="@style/Widget.Material3.Button.ElevatedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
-        android:text="Get Started"
+        android:text="Customer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/illustration"/>
+        app:layout_constraintTop_toBottomOf="@id/title"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnAdmin"
+        style="@style/Widget.Material3.Button.ElevatedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Admin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnCustomer"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

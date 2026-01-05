@@ -1,6 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="6dp"
@@ -31,8 +33,8 @@
             android:text="Item name"
             android:textAppearance="?attr/textAppearanceSubtitle1"
             android:textColor="?attr/colorOnSurface"
-            app:layout_constraintEnd_toStartOf="@id/btnDelete"
-            app:layout_constraintStart_toEndOf="@id/ivCartItem"
+            app:layout_constraintEnd_toStartOf="@id/quantity_controls"
+            app:layout_constraintStart_toEndOf="@+id/ivCartItem"
             app:layout_constraintTop_toTopOf="@id/ivCartItem"/>
 
         <TextView
@@ -46,14 +48,36 @@
             app:layout_constraintStart_toStartOf="@id/tvCartName"
             app:layout_constraintTop_toBottomOf="@id/tvCartName"/>
 
-        <ImageButton
-            android:id="@+id/btnDelete"
+        <LinearLayout
+            android:id="@+id/quantity_controls"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_delete_24"
-            android:tint="?attr/colorError"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageButton
+                android:id="@+id/btn_remove"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_remove_circle_24" />
+
+            <TextView
+                android:id="@+id/tv_quantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="1" />
+
+            <ImageButton
+                android:id="@+id/btn_add"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_add_circle_24" />
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

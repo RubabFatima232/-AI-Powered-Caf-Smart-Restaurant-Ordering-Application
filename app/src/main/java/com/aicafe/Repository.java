@@ -1,40 +1,43 @@
 package com.aicafe;
 
-import com.aicafe.model.MenuItem;
-import com.aicafe.model.Order;
-import java.util.List;
-import java.util.UUID;
 import retrofit2.Call;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import java.util.List;
 
 public class Repository {
-    private final ApiService api = RetrofitClient.getRetrofitInstance().create(ApiService.class);
+    private final ApiService apiService;
 
-    public interface Callback {
-        void onSuccess(List<MenuItem> items);
+    public interface Callback<T> {
+        void onSuccess(T items);
         void onError(Exception e);
     }
 
-    public void getMenuItems(Callback callback) {
-        api.getMenu().enqueue(new retrofit2.Callback<List<MenuItem>>() {
+    public Repository() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://firebasestorage.googleapis.com/v0/b/aicafe-f0b3e.appspot.com/o/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        apiService = retrofit.create(ApiService.class);
+    }
+
+    public void getMenuItems(final Callback<List<MenuItem>> callback) {
+        apiService.getMenu().enqueue(new retrofit2.Callback<List<MenuItem>>() {
             @Override
             public void onResponse(Call<List<MenuItem>> call, Response<List<MenuItem>> response) {
-                if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful()) {
                     callback.onSuccess(response.body());
                 } else {
-                    callback.onError(new Exception("Failed to fetch menu"));
+                    callback.onError(new Exception("Failed to load menu"));
                 }
             }
 
             @Override
             public void onFailure(Call<List<MenuItem>> call, Throwable t) {
-                callback.onError(new Exception(t));
+                callback.onError((Exception) t);
             }
         });
-    }
-
-    public Order placeOrder(List<Integer> itemIds) {
-        // In a real app, this would be an async call
-        return new Order(UUID.randomUUID().toString());
     }
 }

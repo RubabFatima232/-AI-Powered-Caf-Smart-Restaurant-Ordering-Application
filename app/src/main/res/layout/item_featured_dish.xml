@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -41,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="AI chef’s special – limited time!"
+            android:text="Chef’s special – limited time!"
             android:textAppearance="?attr/textAppearanceBody2"
             android:textColor="?attr/colorOnSurfaceVariant"
             app:layout_constraintEnd_toEndOf="@id/tvFeaturedName"
@@ -65,7 +66,7 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_add_circle_24"
-            android:tint="?attr/colorPrimary"
+            app:tint="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="@id/ivFeatured"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/ivFeatured"/>

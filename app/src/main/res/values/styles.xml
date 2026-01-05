@@ -1,9 +1,2 @@
 <resources>
-    <style name="Button.Primary" parent="Widget.Material3.Button.ElevatedButton">
-        <item name="backgroundTint">?attr/colorPrimary</item>
-        <item name="android:textColor">?attr/colorOnPrimary</item>
-        <item name="cornerRadius">12dp</item>
-        <item name="android:paddingVertical">14dp</item>
-        <item name="android:textSize">16sp</item>
-    </style>
 </resources>

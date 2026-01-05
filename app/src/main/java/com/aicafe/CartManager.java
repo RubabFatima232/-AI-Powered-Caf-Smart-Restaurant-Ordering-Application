@@ -2,69 +2,80 @@ package com.aicafe;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import com.aicafe.model.MenuItem;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class CartManager {
     private static CartManager instance;
-    public final Map<Integer, MenuItem> map = new ConcurrentHashMap<>();
-
-    private final MutableLiveData<List<MenuItem>> cart = new MutableLiveData<>();
-    private final MutableLiveData<Integer> count = new MutableLiveData<>();
-    private final MutableLiveData<Double> total = new MutableLiveData<>();
-
-    private CartManager() {
-        updateLiveData();
-    }
+    private final Map<Integer, CartItem> map = new HashMap<>();
+    private final MutableLiveData<List<CartItem>> liveItems = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<Double> liveTotal = new MutableLiveData<>(0.0);
+    private final MutableLiveData<Integer> liveCount = new MutableLiveData<>(0);
 
     public static synchronized CartManager getInstance() {
-        if (instance == null) {
-            instance = new CartManager();
-        }
+        if (instance == null) instance = new CartManager();
         return instance;
     }
 
-    public LiveData<List<MenuItem>> getCart() { return cart; }
-    public LiveData<Integer> getCount() { return count; }
-    public LiveData<Double> getTotal() { return total; }
-
     public void add(MenuItem item) {
-        if (item == null) return;
-        map.put(item.getId(), item);
-        updateLiveData();
-    }
-
-    public void remove(int itemId) {
-        map.remove(itemId);
-        updateLiveData();
+        if (map.containsKey(item.getId())) {
+            CartItem cartItem = map.get(item.getId());
+            if (cartItem != null) {
+                cartItem.increment();
+            }
+        } else {
+            map.put(item.getId(), new CartItem(item));
+        }
+        update();
     }
 
     public void remove(MenuItem item) {
-        if (item == null) return;
-        remove(item.getId());
+        if (map.containsKey(item.getId())) {
+            CartItem cartItem = map.get(item.getId());
+            if (cartItem != null) {
+                cartItem.decrement();
+                if (cartItem.getQuantity() == 0) {
+                    map.remove(item.getId());
+                }
+            }
+        }
+        update();
     }
 
     public void clear() {
         map.clear();
-        updateLiveData();
+        update();
     }
 
     public List<Integer> getItemIds() {
         return new ArrayList<>(map.keySet());
     }
 
-    private void updateLiveData() {
-        List<MenuItem> items = new ArrayList<>(map.values());
-        cart.postValue(items);
-        count.postValue(items.size());
-        
-        double currentTotal = 0;
-        for (MenuItem item : items) {
-            currentTotal += item.getPrice();
+    public LiveData<List<CartItem>> getItems() {
+        return liveItems;
+    }
+
+    public LiveData<Double> getTotal() {
+        return liveTotal;
+    }
+
+    public LiveData<Integer> getCount() {
+        return liveCount;
+    }
+
+    private void update() {
+        List<CartItem> list = new ArrayList<>(map.values());
+        liveItems.postValue(list);
+        int count = 0;
+        double total = 0;
+        for (CartItem i : list) {
+            count += i.getQuantity();
+            total += i.getSubtotal();
         }
-        total.postValue(currentTotal);
+        liveCount.postValue(count);
+        liveTotal.postValue(total);
     }
 }

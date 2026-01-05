@@ -1,34 +1,35 @@
 package com.aicafe;
 
+import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import com.aicafe.model.MenuItem;
-import com.aicafe.model.Order;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class OrderViewModel extends ViewModel {
-
-    public final MutableLiveData<List<MenuItem>> menuLive = new MutableLiveData<>();
     public final MutableLiveData<Order> orderLive = new MutableLiveData<>();
-    private final Repository repository = new Repository();
 
-    public void loadMenu() {
-        repository.getMenuItems(new Repository.Callback() {
-            @Override
-            public void onSuccess(List<MenuItem> items) {
-                menuLive.postValue(items);
+    public void placeOrder(Context context, List<Integer> itemIds) {
+        List<MenuItem> allItems = MenuRepository.getMenu();
+        List<MenuItem> orderItems = new ArrayList<>();
+        double total = 0;
+        for (int id : itemIds) {
+            for (MenuItem item : allItems) {
+                if (item.getId() == id) {
+                    orderItems.add(item);
+                    total += item.getPrice();
+                    break;
+                }
             }
+        }
 
-            @Override
-            public void onError(Exception e) {
-                // For now, do nothing
-            }
-        });
-    }
-
-    public void placeOrder(List<Integer> itemIds) {
-        // In a real app, you would have a proper callback
-        Order order = repository.placeOrder(itemIds);
+        String date = new SimpleDateFormat("d MMM yyyy", Locale.getDefault()).format(new Date());
+        Order order = new Order(String.valueOf(System.currentTimeMillis()), orderItems, total, date);
+        OrderRepository.saveOrder(context, order);
         orderLive.postValue(order);
     }
 }
